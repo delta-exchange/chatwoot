@@ -37,6 +37,7 @@ spec:
       containers:
         - name: APP_NAME
           image: DOCKER_IMAGE_NAME
+          command: ['bundle', 'exec', 'sidekiq', '-C', 'config/sidekiq.yml']
           envFrom:
           - secretRef:
               name: SECRET_NAME
