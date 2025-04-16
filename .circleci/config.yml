@@ -120,7 +120,7 @@ workflows:
           region: "${AWS_REGION}"
           account_id: ${AWS_ACCOUNT_ID}
           create_repo: true
-          dockerfile: Dockerfile-staging
+          dockerfile: Dockerfile
           no_output_timeout: 30m
           profile_name: deltaexchange-oidc
           repo: chatwoot
@@ -150,5 +150,5 @@ workflows:
           deployment-name: 'staging-sidekiq'
           requires:
             - staging-build
-            
+
       
