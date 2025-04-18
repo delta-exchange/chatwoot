@@ -1,4 +1,4 @@
-FROM 906448822492.dkr.ecr.ap-northeast-1.amazonaws.com/base_chatwoot:chatwoot_v1
+FROM 685872830077.dkr.ecr.ap-northeast-1.amazonaws.com/base_chatwoot:chatwoot_v1
 
 
 EXPOSE 5151
