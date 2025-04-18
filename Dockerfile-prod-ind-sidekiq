@@ -1,0 +1,5 @@
+FROM 906448822492.dkr.ecr.ap-northeast-1.amazonaws.com/base_chatwoot:chatwoot_v1
+
+
+EXPOSE 5151
+CMD ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]

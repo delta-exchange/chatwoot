@@ -241,6 +241,48 @@ workflows:
           profile_name: deltaexchange-oidc
           repo: chatwoot
           tag: sidekiq-${CIRCLE_SHA1}
+      
+      ## prod ind rails build
+      - aws-ecr/build_and_push_image:
+          name: prod-ind-build-rails
+          auth:
+            - aws-cli/setup:
+                role_arn: "${AWS_ROLE_ARN}"
+                profile_name: deltaexchange-oidc
+          context: prod-india
+          filters:
+            branches:
+              only:
+                - devnet
+          region: "${AWS_REGION}"
+          account_id: ${AWS_ACCOUNT_ID}
+          create_repo: true
+          dockerfile: Dockerfile-prod-ind-rails
+          no_output_timeout: 30m
+          profile_name: deltaexchange-oidc
+          repo: chatwoot
+          tag: rails-${CIRCLE_SHA1}
+      ## prod ind sidekiq build
+      - aws-ecr/build_and_push_image:
+          name: prod-ind-build-sidekiq
+          auth:
+            - aws-cli/setup:
+                role_arn: "${AWS_ROLE_ARN}"
+                profile_name: deltaexchange-oidc
+          context: prod-india
+          filters:
+            branches:
+              only:
+                - devnet
+          region: "${AWS_REGION}"
+          account_id: ${AWS_ACCOUNT_ID}
+          create_repo: true
+          dockerfile: Dockerfile-prod-ind-sidekiq
+          no_output_timeout: 30m
+          profile_name: deltaexchange-oidc
+          repo: chatwoot
+          tag: sidekiq-${CIRCLE_SHA1}
+
       # devnet ind deploy
       - deploy-sidekiq:
           name: devnet-india-sidekiq
@@ -291,4 +333,72 @@ workflows:
           deployment-name: 'staging-chatwoot'
           requires:
             - staging-build-sidekiq
+      
+      - deploy-approval-ind-sidekiq:
+          type: approval
+          filters:
+            branches:
+              only:
+                - devnet
+          requires:
+            - prod-ind-build-sidekiq
+      - deploy-approval-ind-rails:
+          type: approval
+          filters:
+            branches:
+              only:
+                - devnet
+          requires:
+            - prod-ind-build-rails
+
+      # prod ind sidekiq deploy
+      - deploy-sidekiq:
+          name: prod-ind-sidekiq
+          context: prod-india
+          resource_class: delta-exchange/deploy-india
+          filters:
+            branches:
+              only:
+                - devnet
+          cluster-name: prod-india-exchange
+          min-replicas: '2'
+          max-replicas: '2'
+          env-name: production
+          app-name: prod-sidekiq
+          secret-name: prod-ind-sidekiq
+          aws-region: $AWS_REGION
+          docker-image-name: '${AWS_TOKYO_ECR_URL}/chatwoot:sidekiq-${CIRCLE_SHA1}'
+          version-info: ${CIRCLE_SHA1}
+          total_cpu: '0.7'
+          request_cpu: '0.5'
+          limit_memory: '500M'
+          request_memory: '400M'
+          deployment-name: 'prod-sidekiq'
+          requires:
+            - prod-ind-build-rails
+      #prod ind chatwoot deploy
+      - deploy-rails:
+          name: prod-ind-chatwoot-rails
+          context: prod-india
+          resource_class: delta-exchange/deploy-india
+          filters:
+            branches:
+              only:
+                - devnet
+          cluster-name: prod-india-exchange
+          min-replicas: '2'
+          max-replicas: '2'
+          env-name: production
+          app-name: prod-chatwoot
+          secret-name: prod-ind-chatwoot
+          aws-region: $AWS_REGION
+          docker-image-name: '${AWS_TOKYO_ECR_URL}/chatwoot:rails-${CIRCLE_SHA1}'
+          version-info: ${CIRCLE_SHA1}
+          total_cpu: '0.7'
+          request_cpu: '0.5'
+          limit_memory: '500M'
+          request_memory: '400M'
+          deployment-name: 'prod-chatwoot'
+          requires:
+            - prod-ind-build-sidekiq
       
