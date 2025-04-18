@@ -367,7 +367,7 @@ workflows:
           app-name: prod-sidekiq
           secret-name: prod-ind-sidekiq
           aws-region: $AWS_REGION
-          docker-image-name: '${AWS_TOKYO_ECR_URL}/chatwoot:sidekiq-${CIRCLE_SHA1}'
+          docker-image-name: '${AWS_INDIA_ECR_URL}/chatwoot:sidekiq-${CIRCLE_SHA1}'
           version-info: ${CIRCLE_SHA1}
           total_cpu: '0.7'
           request_cpu: '0.5'
@@ -392,7 +392,7 @@ workflows:
           app-name: prod-chatwoot
           secret-name: prod-ind-chatwoot
           aws-region: $AWS_REGION
-          docker-image-name: '${AWS_TOKYO_ECR_URL}/chatwoot:rails-${CIRCLE_SHA1}'
+          docker-image-name: '${AWS_INDIA_ECR_URL}/chatwoot:rails-${CIRCLE_SHA1}'
           version-info: ${CIRCLE_SHA1}
           total_cpu: '0.7'
           request_cpu: '0.5'
