@@ -375,7 +375,7 @@ workflows:
           request_memory: '400M'
           deployment-name: 'prod-sidekiq'
           requires:
-            - prod-ind-build-rails
+            - deploy-approval-ind-sidekiq
       #prod ind chatwoot deploy
       - deploy-rails:
           name: prod-ind-chatwoot-rails
@@ -400,5 +400,5 @@ workflows:
           request_memory: '400M'
           deployment-name: 'prod-chatwoot'
           requires:
-            - prod-ind-build-sidekiq
+            - deploy-approval-ind-rails
       
