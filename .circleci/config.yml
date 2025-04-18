@@ -255,7 +255,7 @@ workflows:
               only:
                 - devnet
           region: "${AWS_REGION}"
-          account_id: ${AWS_ACCOUNT_ID}
+          account_id: ${AWS_IND_ACCOUNT}
           create_repo: true
           dockerfile: Dockerfile-prod-ind-rails
           no_output_timeout: 30m
@@ -275,7 +275,7 @@ workflows:
               only:
                 - devnet
           region: "${AWS_REGION}"
-          account_id: ${AWS_ACCOUNT_ID}
+          account_id: ${AWS_IND_ACCOUNT}
           create_repo: true
           dockerfile: Dockerfile-prod-ind-sidekiq
           no_output_timeout: 30m
