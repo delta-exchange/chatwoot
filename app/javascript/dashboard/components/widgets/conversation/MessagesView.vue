@@ -129,6 +129,10 @@ import { BUS_EVENTS } from 'shared/constants/busEvents';
 import { REPLY_POLICY } from 'shared/constants/links';
 import wootConstants from 'dashboard/constants/globals';
 import { LOCAL_STORAGE_KEYS } from 'dashboard/constants/localStorage';
+import { FEATURE_FLAGS } from '../../../featureFlags';
+import { INBOX_TYPES } from 'dashboard/helper/inbox';
+
+import NextButton from 'dashboard/components-next/button/Button.vue';
 
 export default {
   components: {
@@ -260,6 +264,17 @@ export default {
     getLastSeenAt() {
       const { contact_last_seen_at: contactLastSeenAt } = this.currentChat;
       return contactLastSeenAt;
+    },
+
+    // Check there is a instagram inbox exists with the same instagram_id
+    hasDuplicateInstagramInbox() {
+      const instagramId = this.inbox.instagram_id;
+      const instagramInbox =
+        this.$store.getters['inboxes/getInstagramInboxByInstagramId'](
+          instagramId
+        );
+
+      return this.inbox.channel_type === INBOX_TYPES.FB && instagramInbox;
     },
 
     replyWindowBannerMessage() {
@@ -538,18 +553,150 @@ export default {
 };
 </script>
 
-<style scoped>
-@tailwind components;
-@layer components {
-  .rounded-bl-calc {
-    border-bottom-left-radius: calc(1.5rem + 1px);
-  }
-
-  .rounded-tl-calc {
-    border-top-left-radius: calc(1.5rem + 1px);
-  }
-}
-</style>
+<template>
+  <div class="flex flex-col justify-between flex-grow h-full min-w-0 m-0">
+    <Banner
+      v-if="!currentChat.can_reply"
+      color-scheme="alert"
+      class="mx-2 mt-2 overflow-hidden rounded-lg"
+      :banner-message="replyWindowBannerMessage"
+      :href-link="replyWindowLink"
+      :href-link-text="replyWindowLinkText"
+    />
+    <Banner
+      v-else-if="hasDuplicateInstagramInbox"
+      color-scheme="alert"
+      class="mx-2 mt-2 overflow-hidden rounded-lg"
+      :banner-message="$t('CONVERSATION.OLD_INSTAGRAM_INBOX_REPLY_BANNER')"
+    />
+    <div class="flex justify-end">
+      <NextButton
+        faded
+        xs
+        slate
+        class="!rounded-r-none rtl:rotate-180 !rounded-2xl !fixed z-10"
+        :icon="
+          isContactPanelOpen ? 'i-ph-caret-right-fill' : 'i-ph-caret-left-fill'
+        "
+        :class="isInboxView ? 'top-52 md:top-40' : 'top-32'"
+        @click="onToggleContactPanel"
+      />
+    </div>
+    <NextMessageList
+      v-if="showNextBubbles"
+      class="conversation-panel"
+      :current-user-id="currentUserId"
+      :first-unread-id="unReadMessages[0]?.id"
+      :is-an-email-channel="isAnEmailChannel"
+      :inbox-supports-reply-to="inboxSupportsReplyTo"
+      :messages="getMessages"
+    >
+      <template #beforeAll>
+        <transition name="slide-up">
+          <!-- eslint-disable-next-line vue/require-toggle-inside-transition -->
+          <li class="min-h-[4rem]">
+            <span v-if="shouldShowSpinner" class="spinner message" />
+          </li>
+        </transition>
+      </template>
+      <template #unreadBadge>
+        <li v-show="unreadMessageCount != 0" class="unread--toast">
+          <span>
+            {{ unreadMessageLabel }}
+          </span>
+        </li>
+      </template>
+      <template #after>
+        <ConversationLabelSuggestion
+          v-if="shouldShowLabelSuggestions"
+          :suggested-labels="labelSuggestions"
+          :chat-labels="currentChat.labels"
+          :conversation-id="currentChat.id"
+        />
+      </template>
+    </NextMessageList>
+    <ul v-else class="conversation-panel">
+      <transition name="slide-up">
+        <!-- eslint-disable-next-line vue/require-toggle-inside-transition -->
+        <li class="min-h-[4rem]">
+          <span v-if="shouldShowSpinner" class="spinner message" />
+        </li>
+      </transition>
+      <Message
+        v-for="message in readMessages"
+        :key="message.id"
+        class="message--read ph-no-capture"
+        data-clarity-mask="True"
+        :data="message"
+        :is-a-tweet="isATweet"
+        :is-a-whatsapp-channel="isAWhatsAppChannel"
+        :is-web-widget-inbox="isAWebWidgetInbox"
+        :is-a-facebook-inbox="isAFacebookInbox"
+        :is-an-email-inbox="isAnEmailChannel"
+        :is-instagram="isInstagramDM"
+        :inbox-supports-reply-to="inboxSupportsReplyTo"
+        :in-reply-to="getInReplyToMessage(message)"
+      />
+      <li v-show="unreadMessageCount != 0" class="unread--toast">
+        <span>
+          {{ unreadMessageCount > 9 ? '9+' : unreadMessageCount }}
+          {{
+            unreadMessageCount > 1
+              ? $t('CONVERSATION.UNREAD_MESSAGES')
+              : $t('CONVERSATION.UNREAD_MESSAGE')
+          }}
+        </span>
+      </li>
+      <Message
+        v-for="message in unReadMessages"
+        :key="message.id"
+        class="message--unread ph-no-capture"
+        data-clarity-mask="True"
+        :data="message"
+        :is-a-tweet="isATweet"
+        :is-a-whatsapp-channel="isAWhatsAppChannel"
+        :is-web-widget-inbox="isAWebWidgetInbox"
+        :is-a-facebook-inbox="isAFacebookInbox"
+        :is-instagram-dm="isInstagramDM"
+        :inbox-supports-reply-to="inboxSupportsReplyTo"
+        :in-reply-to="getInReplyToMessage(message)"
+      />
+      <ConversationLabelSuggestion
+        v-if="shouldShowLabelSuggestions"
+        :suggested-labels="labelSuggestions"
+        :chat-labels="currentChat.labels"
+        :conversation-id="currentChat.id"
+      />
+    </ul>
+    <div
+      class="conversation-footer"
+      :class="{
+        'modal-mask': isPopOutReplyBox,
+        'bg-n-background': showNextBubbles && !isPopOutReplyBox,
+      }"
+    >
+      <div
+        v-if="isAnyoneTyping"
+        class="absolute flex items-center w-full h-0 -top-7"
+      >
+        <div
+          class="flex py-2 pr-4 pl-5 shadow-md rounded-full bg-white dark:bg-slate-700 text-n-slate-11 text-xs font-semibold my-2.5 mx-auto"
+        >
+          {{ typingUserNames }}
+          <img
+            class="w-6 ltr:ml-2 rtl:mr-2"
+            src="assets/images/typing.gif"
+            alt="Someone is typing"
+          />
+        </div>
+      </div>
+      <ReplyBox
+        v-model:popout-reply-box="isPopOutReplyBox"
+        @toggle-popout="showPopOutReplyBox"
+      />
+    </div>
+  </div>
+</template>
 
 <style scoped lang="scss">
 .modal-mask {

@@ -104,3 +104,23 @@ export default {
   },
 };
 </script>
+
+<template>
+  <ReportHeader :header-title="$t('BOT_REPORTS.HEADER')" />
+  <div class="flex flex-col gap-4">
+    <ReportFilterSelector
+      :show-agents-filter="false"
+      show-group-by-filter
+      :show-business-hours-switch="false"
+      @filter-change="onFilterChange"
+    />
+
+    <BotMetrics :filters="requestPayload" />
+    <ReportContainer
+      account-summary-key="getBotSummary"
+      summary-fetching-key="getBotSummaryFetchingStatus"
+      :group-by="groupBy"
+      :report-keys="reportKeys"
+    />
+  </div>
+</template>

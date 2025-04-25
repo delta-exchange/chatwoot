@@ -1,8 +1,100 @@
+<script>
+import EmptyState from '../../../../components/widgets/EmptyState.vue';
+import NextButton from 'dashboard/components-next/button/Button.vue';
+import DuplicateInboxBanner from './channels/instagram/DuplicateInboxBanner.vue';
+import { INBOX_TYPES } from 'dashboard/helper/inbox';
+export default {
+  components: {
+    EmptyState,
+    NextButton,
+    DuplicateInboxBanner,
+  },
+  computed: {
+    currentInbox() {
+      return this.$store.getters['inboxes/getInbox'](
+        this.$route.params.inbox_id
+      );
+    },
+    isATwilioInbox() {
+      return this.currentInbox.channel_type === 'Channel::TwilioSms';
+    },
+    // Check if a facebook inbox exists with the same instagram_id
+    hasDuplicateInstagramInbox() {
+      const instagramId = this.currentInbox.instagram_id;
+      const facebookInbox =
+        this.$store.getters['inboxes/getFacebookInboxByInstagramId'](
+          instagramId
+        );
+
+      return (
+        this.currentInbox.channel_type === INBOX_TYPES.INSTAGRAM &&
+        facebookInbox
+      );
+    },
+
+    isAEmailInbox() {
+      return this.currentInbox.channel_type === 'Channel::Email';
+    },
+    isALineInbox() {
+      return this.currentInbox.channel_type === 'Channel::Line';
+    },
+    isASmsInbox() {
+      return this.currentInbox.channel_type === 'Channel::Sms';
+    },
+    isWhatsAppCloudInbox() {
+      return (
+        this.currentInbox.channel_type === 'Channel::Whatsapp' &&
+        this.currentInbox.provider === 'whatsapp_cloud'
+      );
+    },
+    message() {
+      if (this.isATwilioInbox) {
+        return `${this.$t('INBOX_MGMT.FINISH.MESSAGE')}. ${this.$t(
+          'INBOX_MGMT.ADD.TWILIO.API_CALLBACK.SUBTITLE'
+        )}`;
+      }
+
+      if (this.isASmsInbox) {
+        return `${this.$t('INBOX_MGMT.FINISH.MESSAGE')}. ${this.$t(
+          'INBOX_MGMT.ADD.SMS.BANDWIDTH.API_CALLBACK.SUBTITLE'
+        )}`;
+      }
+
+      if (this.isALineInbox) {
+        return `${this.$t('INBOX_MGMT.FINISH.MESSAGE')}. ${this.$t(
+          'INBOX_MGMT.ADD.LINE_CHANNEL.API_CALLBACK.SUBTITLE'
+        )}`;
+      }
+
+      if (this.isWhatsAppCloudInbox) {
+        return `${this.$t('INBOX_MGMT.FINISH.MESSAGE')}. ${this.$t(
+          'INBOX_MGMT.ADD.WHATSAPP.API_CALLBACK.SUBTITLE'
+        )}`;
+      }
+
+      if (this.isAEmailInbox && !this.currentInbox.provider) {
+        return this.$t('INBOX_MGMT.ADD.EMAIL_CHANNEL.FINISH_MESSAGE');
+      }
+
+      if (this.currentInbox.web_widget_script) {
+        return this.$t('INBOX_MGMT.FINISH.WEBSITE_SUCCESS');
+      }
+
+      return this.$t('INBOX_MGMT.FINISH.MESSAGE');
+    },
+  },
+};
+</script>
+
 <template>
   <div
-    class="border border-slate-25 dark:border-slate-800/60 bg-white dark:bg-slate-900 h-full p-6 w-full max-w-full md:w-3/4 md:max-w-[75%] flex-shrink-0 flex-grow-0"
+    class="w-full h-full col-span-6 p-6 overflow-auto border border-b-0 rounded-t-lg border-n-weak bg-n-solid-1"
   >
-    <empty-state
+    <DuplicateInboxBanner
+      v-if="hasDuplicateInstagramInbox"
+      :content="$t('INBOX_MGMT.ADD.INSTAGRAM.NEW_INBOX_SUGGESTION')"
+    />
+    <EmptyState
       :title="$t('INBOX_MGMT.FINISH.TITLE')"
       :message="message"
       :button-text="$t('INBOX_MGMT.FINISH.BUTTON_TEXT')"

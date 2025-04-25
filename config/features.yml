@@ -20,7 +20,8 @@
   enabled: true
   help_url: https://chwt.app/hc/help-center
 - name: agent_bots
-  enabled: false
+  display_name: Agent Bots
+  enabled: true
   help_url: https://chwt.app/hc/agent-bots
 - name: macros
   enabled: true

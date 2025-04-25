@@ -46,6 +46,14 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    accountSummaryKey: {
+      type: String,
+      default: 'getAccountSummary',
+    },
+    summaryFetchingKey: {
+      type: String,
+      default: 'getAccountSummaryFetchingStatus',
+    },
     reportKeys: {
       type: Object,
       default: () => ({
@@ -150,3 +158,38 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 px-6 py-5 shadow outline-1 outline outline-n-container rounded-xl bg-n-solid-2"
+  >
+    <div
+      v-for="metric in metrics"
+      :key="metric.KEY"
+      class="p-4 mb-3 rounded-md"
+    >
+      <ChartStats
+        :metric="metric"
+        :account-summary-key="accountSummaryKey"
+        :summary-fetching-key="summaryFetchingKey"
+      />
+      <div class="mt-4 h-72">
+        <woot-loading-state
+          v-if="accountReport.isFetching[metric.KEY]"
+          class="text-xs"
+          :message="$t('REPORT.LOADING_CHART')"
+        />
+        <div v-else class="flex items-center justify-center h-72">
+          <BarChart
+            v-if="accountReport.data[metric.KEY].length"
+            :collection="getCollection(metric)"
+            :chart-options="getChartOptions(metric)"
+          />
+          <span v-else class="text-sm text-slate-600">
+            {{ $t('REPORT.NO_ENOUGH_DATA') }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
