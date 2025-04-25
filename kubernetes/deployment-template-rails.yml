@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    scout.commandk.dev/mutation-mode: ignore
+    secret.reloader.stakater.com/reload: SECRET_NAME
+  name: DEPLOYMENT_NAME
+  namespace: chatwoot
+  labels:
+    app: APP_NAME
+spec:
+  replicas: MIN_REPLICAS
+  minReadySeconds: 50
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: APP_NAME
+  template:
+    metadata:
+      labels:
+        app: APP_NAME
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - api-gtw-elixir
+      containers:
+        - name: APP_NAME
+          image: DOCKER_IMAGE_NAME
+          # command: ["/bin/sh", "docker/entrypoints/rails.sh"]
+          # args: ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]
+          envFrom:
+          - secretRef:
+              name: SECRET_NAME
+          # readinessProbe:
+          #   httpGet:
+          #     path: /health
+          #     port: 3001
+          #   periodSeconds: 10
+          #   successThreshold: 1
+          #   failureThreshold: 2
+          resources:
+            limits:
+              cpu: 'TOTAL_CPU'
+              memory: 'LIMIT_MEMORY'
+            requests:
+              cpu: 'REQUEST_CPU'
+              memory: 'REQUEST_MEMORY'
+          ports:
+            - containerPort: 5151
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   annotations:
+#   name: ragsearch-devnet
+#   namespace: chatwoot
+# spec:
+#   internalTrafficPolicy: Cluster
+#   ipFamilies:
+#   - IPv4
+#   ipFamilyPolicy: SingleStack
+#   ports:
+#   - name: http
+#     port: 80
+#     protocol: TCP
+#     targetPort: 5151
+#   - name: https
+#     port: 443
+#     protocol: TCP
+#     targetPort: 5151
+#   selector:
+#     app: devnet-ragsearch
+#   sessionAffinity: None
+#   type: ClusterIP
+

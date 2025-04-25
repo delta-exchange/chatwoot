@@ -1,0 +1,6 @@
+FROM 685872830077.dkr.ecr.ap-northeast-1.amazonaws.com/base_chatwoot:chatwoot_v1
+
+COPY container_init.sh /app/container_init.sh
+RUN chmod +x /app/container_init.sh
+EXPOSE 3001
+CMD [ "/app/container_init.sh" ]
