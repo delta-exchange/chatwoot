@@ -213,7 +213,7 @@ workflows:
           filters:
             branches:
               only:
-                - devnet
+                - develop
           region: "${AWS_REGION}"
           account_id: ${AWS_ACCOUNT_ID}
           create_repo: true
@@ -232,7 +232,7 @@ workflows:
           filters:
             branches:
               only:
-                - devnet
+                - develop
           region: "${AWS_REGION}"
           account_id: ${AWS_ACCOUNT_ID}
           create_repo: true
@@ -253,7 +253,7 @@ workflows:
           filters:
             branches:
               only:
-                - devnet
+                - develop
           region: "${AWS_REGION}"
           account_id: ${AWS_IND_ACCOUNT}
           create_repo: true
@@ -273,7 +273,7 @@ workflows:
           filters:
             branches:
               only:
-                - devnet
+                - develop
           region: "${AWS_REGION}"
           account_id: ${AWS_IND_ACCOUNT}
           create_repo: true
@@ -291,7 +291,7 @@ workflows:
           filters:
             branches:
               only:
-                - devnet
+                - develop
           cluster-name: devnet-delta-exchange
           min-replicas: '2'
           max-replicas: '2'
@@ -316,7 +316,7 @@ workflows:
           filters:
             branches:
               only:
-                - devnet
+                - develop
           cluster-name: devnet-delta-exchange
           min-replicas: '2'
           max-replicas: '2'
@@ -339,7 +339,7 @@ workflows:
           filters:
             branches:
               only:
-                - devnet
+                - develop
           requires:
             - prod-ind-build-sidekiq
       - deploy-approval-ind-rails:
@@ -347,7 +347,7 @@ workflows:
           filters:
             branches:
               only:
-                - devnet
+                - develop
           requires:
             - prod-ind-build-rails
 
@@ -359,7 +359,7 @@ workflows:
           filters:
             branches:
               only:
-                - devnet
+                - develop
           cluster-name: prod-india-exchange
           min-replicas: '2'
           max-replicas: '2'
@@ -384,7 +384,7 @@ workflows:
           filters:
             branches:
               only:
-                - devnet
+                - develop
           cluster-name: prod-india-exchange
           min-replicas: '2'
           max-replicas: '2'
