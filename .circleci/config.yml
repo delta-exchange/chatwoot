@@ -346,6 +346,7 @@ workflows:
             branches:
               only:
                 - develop
+                - chatwoot-3.10.0
           requires:
             - prod-ind-build-sidekiq
       - deploy-approval-ind-rails:
@@ -354,6 +355,7 @@ workflows:
             branches:
               only:
                 - develop
+                - chatwoot-3.10.0
           requires:
             - prod-ind-build-rails
 
