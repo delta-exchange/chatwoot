@@ -256,6 +256,7 @@ workflows:
             branches:
               only:
                 - develop
+                - chatwoot-3.10.0
           region: "${AWS_REGION}"
           account_id: ${AWS_IND_ACCOUNT}
           create_repo: true
@@ -276,6 +277,7 @@ workflows:
             branches:
               only:
                 - develop
+                - chatwoot-3.10.0
           region: "${AWS_REGION}"
           account_id: ${AWS_IND_ACCOUNT}
           create_repo: true
@@ -364,6 +366,7 @@ workflows:
             branches:
               only:
                 - develop
+                - chatwoot-3.10.0
           cluster-name: prod-india-exchange
           min-replicas: '2'
           max-replicas: '2'
@@ -389,6 +392,7 @@ workflows:
             branches:
               only:
                 - develop
+                - chatwoot-3.10.0
           cluster-name: prod-india-exchange
           min-replicas: '2'
           max-replicas: '2'
