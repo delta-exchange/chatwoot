@@ -215,6 +215,7 @@ workflows:
               only:
                 - develop
                 - chatwoot-3.10.0
+                - chatwoot/cd-oidc
           region: "${AWS_REGION}"
           account_id: ${AWS_ACCOUNT_ID}
           create_repo: true
@@ -235,6 +236,7 @@ workflows:
               only:
                 - develop
                 - chatwoot-3.10.0
+                - chatwoot/cd-oidc
           region: "${AWS_REGION}"
           account_id: ${AWS_ACCOUNT_ID}
           create_repo: true
@@ -290,13 +292,14 @@ workflows:
       # devnet ind deploy
       - deploy-sidekiq:
           name: devnet-india-sidekiq
-          context: staging
+          context: staging-v2
           resource_class: delta-exchange/deploy-devnet
           filters:
             branches:
               only:
                 - develop
                 - chatwoot-3.10.0
+                - chatwoot/cd-oidc
           cluster-name: devnet-delta-exchange
           min-replicas: '2'
           max-replicas: '2'
@@ -316,13 +319,14 @@ workflows:
       #deploying chatwoot rails
       - deploy-rails:
           name: devnet-india-chatwoot-rails
-          context: staging
+          context: staging-v2
           resource_class: delta-exchange/deploy-devnet
           filters:
             branches:
               only:
                 - develop
                 - chatwoot-3.10.0
+                - chatwoot/cd-oidc
           cluster-name: devnet-delta-exchange
           min-replicas: '2'
           max-replicas: '2'
