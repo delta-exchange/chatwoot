@@ -362,7 +362,7 @@ workflows:
       # prod ind sidekiq deploy
       - deploy-sidekiq:
           name: prod-ind-sidekiq
-          context: prod-india
+          context: prod-india-v2
           resource_class: delta-exchange/deploy-india
           filters:
             branches:
@@ -388,7 +388,7 @@ workflows:
       #prod ind chatwoot deploy
       - deploy-rails:
           name: prod-ind-chatwoot-rails
-          context: prod-india
+          context: prod-india-v2
           resource_class: delta-exchange/deploy-india
           filters:
             branches:
