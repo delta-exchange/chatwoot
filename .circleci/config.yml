@@ -290,7 +290,7 @@ workflows:
       # devnet ind deploy
       - deploy-sidekiq:
           name: devnet-india-sidekiq
-          context: staging
+          context: staging-v2
           resource_class: delta-exchange/deploy-devnet
           filters:
             branches:
@@ -316,7 +316,7 @@ workflows:
       #deploying chatwoot rails
       - deploy-rails:
           name: devnet-india-chatwoot-rails
-          context: staging
+          context: staging-v2
           resource_class: delta-exchange/deploy-devnet
           filters:
             branches:
@@ -362,7 +362,7 @@ workflows:
       # prod ind sidekiq deploy
       - deploy-sidekiq:
           name: prod-ind-sidekiq
-          context: prod-india
+          context: prod-india-v2
           resource_class: delta-exchange/deploy-india
           filters:
             branches:
@@ -388,7 +388,7 @@ workflows:
       #prod ind chatwoot deploy
       - deploy-rails:
           name: prod-ind-chatwoot-rails
-          context: prod-india
+          context: prod-india-v2
           resource_class: delta-exchange/deploy-india
           filters:
             branches:
