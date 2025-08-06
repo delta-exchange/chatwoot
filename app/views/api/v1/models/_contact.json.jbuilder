@@ -6,7 +6,14 @@ json.name resource.name
 json.phone_number resource.phone_number
 json.identifier resource.identifier
 json.thumbnail resource.avatar_url
-json.custom_attributes resource.custom_attributes
+# Filter out sensitive attributes from custom_attributes for dashboard views
+if defined?(include_auth_token) && include_auth_token
+  # Include all custom_attributes for widget/webhook contexts
+  json.custom_attributes resource.custom_attributes
+else
+  # Exclude sensitive attributes for dashboard contexts
+  json.custom_attributes resource.custom_attributes.except(*ContactConstants::SENSITIVE_CUSTOM_ATTRIBUTES)
+end
 json.last_activity_at resource.last_activity_at.to_i if resource[:last_activity_at].present?
 json.created_at resource.created_at.to_i if resource[:created_at].present?
 # we only want to output contact inbox when its /contacts endpoints

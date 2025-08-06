@@ -8,4 +8,7 @@ json.messages do
   end
 end
 json.custom_attributes @conversation.custom_attributes
-json.contact @conversation.contact
+json.contact do
+  # Widget should NOT have access to sensitive attributes like auth_token
+  json.partial! 'api/v1/models/contact', formats: [:json], resource: @conversation.contact, locals: { include_auth_token: false }
+end

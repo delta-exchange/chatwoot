@@ -1,3 +1,5 @@
+require 'contact_constants'
+
 class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   include Sift
   sort_on :email, type: :string
@@ -79,7 +81,9 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   # TODO : refactor this method into dedicated contacts/custom_attributes controller class and routes
   def destroy_custom_attributes
-    @contact.custom_attributes = @contact.custom_attributes.excluding(params[:custom_attributes])
+    # Filter out sensitive attributes from deletion - dashboard users can't delete sensitive attributes
+    attributes_to_delete = params[:custom_attributes].reject { |attr| ContactConstants::SENSITIVE_CUSTOM_ATTRIBUTES.include?(attr) }
+    @contact.custom_attributes = @contact.custom_attributes.excluding(attributes_to_delete)
     @contact.save!
   end
 
@@ -157,7 +161,11 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   end
 
   def contact_custom_attributes
-    return @contact.custom_attributes.merge(permitted_params[:custom_attributes]) if permitted_params[:custom_attributes]
+    # Filter out sensitive attributes if they're being updated from dashboard
+    if permitted_params[:custom_attributes].present?
+      filtered_attributes = permitted_params[:custom_attributes].except(*ContactConstants::SENSITIVE_CUSTOM_ATTRIBUTES)
+      return @contact.custom_attributes.merge(filtered_attributes)
+    end
 
     @contact.custom_attributes
   end

@@ -85,6 +85,9 @@ const settings = accountId => ({
       icon: 'code',
       label: 'CUSTOM_ATTRIBUTES',
       hasSubMenu: false,
+      meta: {
+        permissions: ['administrator'],
+      },
       toState: frontendURL(
         `accounts/${accountId}/settings/custom-attributes/list`
       ),

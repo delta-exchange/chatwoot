@@ -38,6 +38,8 @@
 
 # rubocop:enable Layout/LineLength
 
+require 'contact_constants'
+
 class Contact < ApplicationRecord
   include Avatarable
   include AvailabilityStatusable
@@ -134,7 +136,8 @@ class Contact < ApplicationRecord
   def push_event_data
     {
       additional_attributes: additional_attributes,
-      custom_attributes: custom_attributes,
+      # Filter out sensitive attributes from custom_attributes (webhooks use webhook_data method)
+      custom_attributes: custom_attributes.except(*ContactConstants::SENSITIVE_CUSTOM_ATTRIBUTES),
       email: email,
       id: id,
       identifier: identifier,
@@ -150,6 +153,7 @@ class Contact < ApplicationRecord
       account: account.webhook_data,
       additional_attributes: additional_attributes,
       avatar: avatar_url,
+      # Include ALL custom_attributes for webhooks (including sensitive attributes like auth_token)
       custom_attributes: custom_attributes,
       email: email,
       id: id,

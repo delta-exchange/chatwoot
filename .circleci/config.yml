@@ -215,6 +215,7 @@ workflows:
               only:
                 - develop
                 - chatwoot-3.10.0
+                - fix/filter-sensitive-attributes
           region: "${AWS_REGION}"
           account_id: ${AWS_ACCOUNT_ID}
           create_repo: true
@@ -235,6 +236,7 @@ workflows:
               only:
                 - develop
                 - chatwoot-3.10.0
+                - fix/filter-sensitive-attributes
           region: "${AWS_REGION}"
           account_id: ${AWS_ACCOUNT_ID}
           create_repo: true
@@ -297,6 +299,7 @@ workflows:
               only:
                 - develop
                 - chatwoot-3.10.0
+                - fix/filter-sensitive-attributes
           cluster-name: devnet-delta-exchange
           min-replicas: '2'
           max-replicas: '2'
@@ -323,6 +326,7 @@ workflows:
               only:
                 - develop
                 - chatwoot-3.10.0
+                - fix/filter-sensitive-attributes
           cluster-name: devnet-delta-exchange
           min-replicas: '2'
           max-replicas: '2'

@@ -4,7 +4,8 @@
 
 json.meta do
   json.sender do
-    json.partial! 'api/v1/models/contact', formats: [:json], resource: conversation.contact
+    # Include custom_attributes but exclude auth_token in conversation metadata
+    json.partial! 'api/v1/models/contact', formats: [:json], resource: conversation.contact, locals: { include_auth_token: false }
   end
   json.channel conversation.inbox.try(:channel_type)
   if conversation.assignee&.account
