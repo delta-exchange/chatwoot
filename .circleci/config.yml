@@ -170,6 +170,10 @@ jobs:
         description: |
           app name for managing cluster host file
         type: string
+      service-account:
+        description: |
+          service account name for managing cluster host file
+        type: string
     steps:
       - checkout
       - run:
@@ -189,6 +193,7 @@ jobs:
                 s|SECRET_NAME|<< parameters.secret-name >>|g; \
                 s|DEPLOYMENT_NAME|<< parameters.deployment-name >>|g;\
                 s|APP_NAME|<< parameters.app-name >>|g;\
+                s|SERVICE_ACCOUNT|<< parameters.service-account >>|g;\
                 s|VERSION_INFO_VALUE|<< parameters.version-info >>|g;" > kubernetes/deployment.yml
       - aws-eks/update-kubeconfig-with-authenticator:
           cluster-name: << parameters.cluster-name >>
@@ -337,6 +342,7 @@ workflows:
           limit_memory: '500M'
           request_memory: '400M'
           deployment-name: 'staging-chatwoot'
+          service-account: 'rails-sa'
           requires:
             - staging-build-sidekiq
       
@@ -409,6 +415,7 @@ workflows:
           limit_memory: '700M'
           request_memory: '600M'
           deployment-name: 'prod-chatwoot'
+          service-account: 'chatwoot-rails-sa'
           requires:
             - deploy-approval-ind-rails
       

@@ -34,6 +34,7 @@ spec:
                     operator: In
                     values:
                       - api-gtw-elixir
+      serviceAccountName: SERVICE_ACCOUNT
       containers:
         - name: APP_NAME
           image: DOCKER_IMAGE_NAME
