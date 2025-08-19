@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # HEALTH CHECK
-  get '/health', to: 'health#index'
+  # get '/health', to: 'health#index'
 
   # AUTH STARTS
   mount_devise_token_auth_for 'User', at: 'auth', controllers: {
