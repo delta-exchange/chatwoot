@@ -1,6 +1,6 @@
 class HealthController < ApplicationController
   skip_before_action :authenticate_user!, only: [:index], raise: false
-  skip_before_action :verify_authenticity_token, only: [:index]
+  skip_before_action :verify_authenticity_token, only: [:index], raise: false
 
   def index
     render json: {
