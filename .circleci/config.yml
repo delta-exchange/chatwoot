@@ -220,6 +220,7 @@ workflows:
               only:
                 - develop
                 - chatwoot-3.10.0
+                - fix/resources-env-update
           region: "${AWS_REGION}"
           account_id: ${AWS_ACCOUNT_ID}
           create_repo: true
@@ -240,6 +241,7 @@ workflows:
               only:
                 - develop
                 - chatwoot-3.10.0
+                - fix/resources-env-update
           region: "${AWS_REGION}"
           account_id: ${AWS_ACCOUNT_ID}
           create_repo: true
@@ -302,6 +304,7 @@ workflows:
               only:
                 - develop
                 - chatwoot-3.10.0
+                - fix/resources-env-update
           cluster-name: devnet-delta-exchange
           min-replicas: '1'
           max-replicas: '1'
@@ -328,6 +331,7 @@ workflows:
               only:
                 - develop
                 - chatwoot-3.10.0
+                - fix/resources-env-update
           cluster-name: devnet-delta-exchange
           min-replicas: '1'
           max-replicas: '1'
