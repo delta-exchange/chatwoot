@@ -38,6 +38,15 @@ spec:
         - name: APP_NAME
           image: DOCKER_IMAGE_NAME
           # command: ['bundle', 'exec', 'sidekiq', '-C', 'config/sidekiq.yml']
+          env:
+            - name: SIDEKIQ_CONCURRENCY
+              value: "16"
+            - name: RAILS_MAX_THREADS
+              value: "16"
+            - name: POSTGRES_STATEMENT_TIMEOUT
+              value: "15s"
+            - name: REDIS_TIMEOUT
+              value: "5"
           envFrom:
           - secretRef:
               name: SECRET_NAME
